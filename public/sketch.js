@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://technosquirrel.github.io/tone-circle-test/';
+const SERVER_URL = 'http://localhost:5000';
 
 var socket;
 
@@ -153,9 +153,7 @@ function updateTimer() {
   timer += deltaTime / 1000;
   try {
     socket.emit('timer', {time: timer});
-  } catch (error) {
-
-  }
+  } catch (error) {}
 }
 
 function drawTimer() {
