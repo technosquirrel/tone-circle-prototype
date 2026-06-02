@@ -1,4 +1,4 @@
-const SERVER_URL = 'http://localhost:5000';
+const SERVER_URL = 'https://technosquirrel.github.io/tone-circle-test/';
 
 var socket;
 
