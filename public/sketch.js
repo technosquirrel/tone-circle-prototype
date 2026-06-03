@@ -1,4 +1,4 @@
-const SERVER_URL = 'http://localhost:5000';
+const SERVER_URL = 'https://tone-circle-prototype.onrender.com/';
 
 var socket;
 
@@ -65,7 +65,7 @@ function draw() {
 }
 
 function connect() {
-  socket = io.connect(SERVER_URL);
+  socket = io.connect();
   connectBtn.remove();
   disconnectBtn = makeDisconnectButton();
 
