@@ -33,9 +33,9 @@ function setup() {
   resetBtn = createButton('Reset');
   resetBtn.position(windowWidth / 2 - windowHeight / 4 + 20, 30);
   resetBtn.mousePressed(() => {
-    if (socket) {
+    try {
       socket.emit('reset');
-    } else {
+    } catch (error) {
       reset();
     }
   })
@@ -43,9 +43,9 @@ function setup() {
   syncBtn = createButton('Sync');
   syncBtn.position(windowWidth / 2 + windowHeight / 4 - 64, 30);
   syncBtn.mousePressed(() => {
-    if (socket) {
+    try {
       socket.emit('sync', {time : timer});
-    }
+    } catch (error) {}
   })
 
   originX = width / 2;
@@ -163,18 +163,18 @@ function drawTimer() {
 }
 
 function sendPlay() {
-  if (!socket) {
-    play();
-  } else {
+  try {
     socket.emit('play');
+  } catch (error) {
+    play();
   }
 }
 
 function sendPause() {
-  if (!socket) {
-    pause();
-  } else {
+  try{
     socket.emit('pause');
+  } catch (error) {
+    pause();
   }
 }
 
