@@ -1,5 +1,3 @@
-const SERVER_URL = 'https://tone-circle-prototype.onrender.com/';
-
 var socket;
 
 let connectBtn;
@@ -22,20 +20,22 @@ let radius;
 
 function setup() {
 
-  createCanvas(windowHeight / 2, windowHeight - 20);
+  createCanvas(windowHeight / 2, (windowHeight - 20));
 
   background(c);
 
   connectBtn = makeConnectButton();
+  disconnectBtn = makeDisconnectButton().hide();
   settingsBtn = makeSettingsButton();
   playBtn = makePlayButton();
+  pauseBtn = makePauseButton().hide();
 
   resetBtn = createButton('Reset');
   resetBtn.position(windowWidth / 2 - windowHeight / 4 + 20, 30);
   resetBtn.mousePressed(() => {
-    try {
+    if (socket && socket.connected) {
       socket.emit('reset');
-    } catch (error) {
+    } else {
       reset();
     }
   })
@@ -43,9 +43,9 @@ function setup() {
   syncBtn = createButton('Sync');
   syncBtn.position(windowWidth / 2 + windowHeight / 4 - 64, 30);
   syncBtn.mousePressed(() => {
-    try {
+    if (socket && socket.connected) {
       socket.emit('sync', {time : timer});
-    } catch (error) {}
+    }
   })
 
   originX = width / 2;
@@ -65,9 +65,9 @@ function draw() {
 }
 
 function connect() {
-  socket = io.connect();
-  connectBtn.remove();
-  disconnectBtn = makeDisconnectButton();
+  socket = io.connect(getURL());
+  connectBtn.hide();
+  disconnectBtn.show();
 
   socket.on('newConnect', (data) => {
     console.log(`Connected to server`);
@@ -83,16 +83,15 @@ function connect() {
   socket.on('pause', pause);
   socket.on('sync', (data) => {
     timer = data.time;
-  })
+  });
   socket.on('reset', reset);
 }
 
 function disconnect() {
   socket.disconnect();
-  socket = null;
   console.log(`Disconnected...`);
-  disconnectBtn.remove();
-  connectBtn = makeConnectButton();
+  disconnectBtn.hide();
+  connectBtn.show();
 }
 
 function randomColor() {
@@ -151,9 +150,9 @@ function drawWheel() {
 
 function updateTimer() {
   timer += deltaTime / 1000;
-  try {
+  if (socket && socket.connected) {
     socket.emit('timer', {time: timer});
-  } catch (error) {}
+  }
 }
 
 function drawTimer() {
@@ -163,17 +162,17 @@ function drawTimer() {
 }
 
 function sendPlay() {
-  try {
+  if (socket && socket.connected) {
     socket.emit('play');
-  } catch (error) {
+  } else {
     play();
   }
 }
 
 function sendPause() {
-  try{
+  if (socket && socket.connected) {
     socket.emit('pause');
-  } catch (error) {
+  } else {
     pause();
   }
 }
@@ -181,16 +180,16 @@ function sendPause() {
 function play() {
   if (!playing) {
     playing = true;
-    playBtn.remove();
-    pauseBtn = makePauseButton();
+    playBtn.hide();
+    pauseBtn.show();
   }
 }
 
 function pause() {
   if (playing) {
     playing = false;
-    pauseBtn.remove();
-    playBtn = makePlayButton();
+    pauseBtn.hide();
+    playBtn.show();
   }
 }
 

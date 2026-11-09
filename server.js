@@ -18,7 +18,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Run when a client connects
 io.on('connection', (socket) => {
-    console.log('New WS Connection...');
     userCount++;
     socket.emit('newConnect', {state: state, time: timer});
 
@@ -29,14 +28,12 @@ io.on('connection', (socket) => {
 
     // send play to all (should be to all in room)
     socket.on('play', () => {
-        console.log('Sending play...');
         state = true;
         io.sockets.emit('play');
     })
 
     // send pause to all (should be to all in room)
     socket.on('pause', () => {
-        console.log('Sending pause...');
         state = false;
         io.sockets.emit('pause');
     })
